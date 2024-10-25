@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>status.json Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            color: #61dafb;
+        }
+        header h1 {
+            font-size: 2.8rem;
+        }
+        h2 {
+            color: #61dafb;
+            font-size: 1.8rem;
+            margin-top: 30px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #9cdcfe;
+            overflow-x: auto;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            color: #dcdcaa;
+        }
+        .json-key {
+            color: #61dafb;
+        }
+        .json-string {
+            color: #ce9178;
+        }
+        .json-boolean {
+            color: #b5cea8;
+        }
+        #statusContainer {
+            margin-top: 20px;
+        }
+        .app-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #252526;
+            border-radius: 8px;
+        }
+        .service-info {
+            border-bottom: 1px solid #333;
+            padding: 10px 0;
+        }
+        .service-info:last-child {
+            border-bottom: none;
+        }
+        a {
+            color: #61dafb;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>status.json Documentation</h1>
+            <p>Guide for Loading and Displaying App Status Data from <a href="https://block-core.github.io/status/status.json" target="_blank">status.json</a></p>
+        </header>
+
+        <section>
+            <h2>Introduction</h2>
+            <p>The <code>status.json</code> file, located at <a href="https://block-core.github.io/status/status.json" target="_blank">https://block-core.github.io/status/status.json</a>, contains real-time status information for various apps and their associated services, indexers, and relays. This documentation explains how to load, parse, and display this data.</p>
+        </section>
+
+        <section>
+            <h2>File Structure</h2>
+            <p>The <code>status.json</code> file has the following structure:</p>
+            <pre>
+{
+    "<span class="json-key">Angor</span>": [
+        {
+            "<span class="json-key">name</span>": "<span class="json-string">hub.angor.io</span>",
+            "<span class="json-key">url</span>": "<span class="json-string">https://hub.angor.io</span>",
+            "<span class="json-key">type</span>": "<span class="json-string">service</span>",
+            "<span class="json-key">isActive</span>": <span class="json-boolean">true</span>,
+            "<span class="json-key">timestamp</span>": "<span class="json-string">2023-10-24T12:00:00Z</span>"
+        },
+        ...
+    ],
+    "<span class="json-key">Ariton</span>": [
+        ...
+    ],
+    "<span class="json-key">Blockcore</span>": [
+        ...
+    ]
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>Loading the status.json File</h2>
+            <p>To load and parse the <code>status.json</code> file, use the Fetch API in JavaScript as shown below:</p>
+            <pre>
+async function loadStatusData() {
+    try {
+        const response = await fetch('<span class="json-string">https://block-core.github.io/status/status.json</span>');
+        const statusData = await response.json();
+        console.log(statusData);
+    } catch (error) {
+        console.error('<span class="json-string">Error loading status.json</span>:', error);
+    }
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>Displaying All App Statuses</h2>
+            <p>To display all app statuses, iterate through the JSON data and render each service as shown:</p>
+            <pre>
+function displayAllStatus(data) {
+    const container = document.getElementById('<span class="json-string">statusContainer</span>');
+    Object.keys(data).forEach(appName => {
+        const appSection = document.createElement('<span class="json-string">div</span>');
+        appSection.classList.add('<span class="json-string">app-section</span>');
+        appSection.innerHTML = `&lt;h3&gt;${appName}&lt;/h3&gt;`;
+
+        data[appName].forEach(service => {
+            appSection.innerHTML += `
+                &lt;div class="service-info"&gt;
+                    &lt;strong&gt;${service.name}&lt;/strong&gt; (${service.type})&lt;br&gt;
+                    URL: &lt;a href="${service.url}" target="_blank"&gt;${service.url}&lt;/a&gt;&lt;br&gt;
+                    Status: ${service.isActive ? "<span style='color: #85d66b;'>Active</span>" : "<span style='color: #ff5c5c;'>Inactive</span>"}
+                &lt;/div&gt;
+            `;
+        });
+
+        container.appendChild(appSection);
+    });
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>Displaying Status for a Specific App</h2>
+            <p>To display status for a single app (e.g., "Angor"), filter the JSON data by app name:</p>
+            <pre>
+function displayAppStatus(data, appName) {
+    const container = document.getElementById('<span class="json-string">statusContainer</span>');
+    container.innerHTML = ''; // Clear previous content
+
+    if (!data[appName]) {
+        container.innerHTML = `<p>App "<span class="json-string">${appName}</span>" not found.</p>`;
+        return;
+    }
+
+    const appSection = document.createElement('<span class="json-string">div</span>');
+    appSection.classList.add('<span class="json-string">app-section</span>');
+    appSection.innerHTML = `<h3>${appName}</h3>`;
+
+    data[appName].forEach(service => {
+        appSection.innerHTML += `
+            &lt;div class="service-info"&gt;
+                &lt;strong&gt;${service.name}&lt;/strong&gt; (${service.type})&lt;br&gt;
+                URL: &lt;a href="${service.url}" target="_blank"&gt;${service.url}&lt;/a&gt;&lt;br&gt;
+                Status: ${service.isActive ? "<span style='color: #85d66b;'>Active</span>" : "<span style='color: #ff5c5c;'>Inactive</span>"}
+            &lt;/div&gt;
+        `;
+    });
+
+    container.appendChild(appSection);
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>Example Usage</h2>
+            <p>Below is an example of how to use these functions to display the data dynamically on a web page:</p>
+            <pre>
+&lt;body&gt;
+    &lt;div id="statusContainer"&gt;&lt;/div&gt;
+    &lt;script&gt;
+        loadStatusData().then(data => {
+            displayAllStatus(data); // To display all apps
+            // Or, to display a specific app:
+            // displayAppStatus(data, '<span class="json-string">Angor</span>');
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+            </pre>
+        </section>
+
+        <div id="statusContainer"></div>
+    </div>
+</body>
+</html>
