@@ -68,11 +68,6 @@
       },
       "services": [
         {
-          "name": "Ariton Payment",
-          "url": "https://pay.ariton.app/status",
-          "type": "service"
-        },
-        {
           "name": "Ariton Alpha",
           "url": "https://alpha.ariton.app",
           "type": "service"
@@ -80,11 +75,6 @@
         {
           "name": "Ariton Web",
           "url": "https://help.ariton.app",
-          "type": "service"
-        },
-        {
-          "name": "Bitcoin Price",
-          "url": "https://pay.ariton.app/price",
           "type": "service"
         }
       ]
